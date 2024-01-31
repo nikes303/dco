@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCO programs</title>
+</head>
+    <body>
+        <h1 style="font-size: larger;"><b>Write Verilog code to demonstrate initializing various types of literal
+            values.</b></h1>
+            <p style="font-size: large;">
+                module literal_values();<br>
+ reg [7:0] my_var;<br>
+ 
+ initial begin<br>
+ my_var = 8'd137; // 137 in decimal<br>
+ $display("my_var = %d", my_var);<br>
+
+ #2 my_var = 8'h89; // 137 in hexadecimal<br>
+ $display("my_var = %x", my_var);<br>
+
+ #2 my_var = 8'b1000_1001; // 137 in binary<br>
+ $display("my_var = %b", my_var);<br>
+
+ #2 my_var = 8'o211; // 137 in octal<br>
+ $display("my_var = %o", my_var);<br>
+
+ #2 my_var = 8'hZ1; // zzzz_0001<br>
+ $display("my_var = %b", my_var);<br>
+
+ #2 my_var = 1'b1; // 8bit variable gets 1 bit value<br>
+ $display("my_var = %b", my_var);<br>
+
+ #2 my_var = 12'b1111_1111_0000; <br>
+ $display("my_var = %b", my_var);<br>
+ end<br>
+endmodule<br>
+</p>
+<hr>
+<h1 style="font-size: larger;"><b>Write Verilog code to test bitwise operators - &, |, ^, ~^ (use 3 variables
+    each of 6 binary bits). Monitor the variables and display results as
+    waveforms</b></h1>
+    <p style="font-size: large;">
+        module bitwise_operators();<br>
+        reg[5:0] x = 0;<br>
+        reg[5:0] y = 0;<br>
+        reg[5:0] result = 0;<br>
+        initial begin<br>
+        $monitor("x = %b, y = %b, result = %b\n", x, y,result);<br>
+        end<br>
+        initial begin<br>
+        #1;<br>
+        x = 6'b00_0101;<br>
+        y = 6'b11_0001;<br>
+        result = x & y;<br>
+        #1;<br>
+        result = ~(x & y);<br>
+        #1;<br>
+        x = 6'b10_0101;<br>
+        y = 6'b01_1011;<br>
+        result = x | y;<br>
+        #1;<br>
+        result = ~(x | y);<br>
+        #1;<br>
+        x = 6'b01_1010;<br>
+        y = 6'b10_0101;<br>
+        result = x ^ y;<br>
+        #1;<br>
+        result = x ~^ y; //xnor, checks if x and y are same<br>
+        #1;<br>
+        x = y;<br>
+        result = ~(x ^ y);<br>
+        end<br>
+        endmodule<br>
+     </p>
+     <hr> 
+<h1 style="font-size: larger;"><b>Write Verilog code to test reduction operators - &, ~&, |, ~|, ^, ~^.
+    Take variable input_bits = 0_1111. Does monitor procedure monitor result everytime? Justify your answer.</b></h1>
+<p style="font-size: large;">
+    module reduction_operators();<br>
+    reg [4:0] input_bits = 5'b0_1111;<br>
+    reg result;<br>
+    initial begin<br>
+    $monitor("input_bits = %b, result = %b\n",input_bits, result);<br>
+    end<br>
+    initial begin<br>
+    result = &input_bits;<br>
+    #1<br>
+    result = ~&input_bits;<br>
+    #1<br>
+    result = |input_bits; //no monitor, because value remains same<br>
+    #1<br>
+    result = ~|input_bits;<br>
+    #1<br>
+    result = ^input_bits; //same here. So only 4 times output<br>
+    #1<br>
+    result = ~^input_bits;<br>
+    end<br>
+    endmodule<br>
+    <br>
+    In the provided Verilog code, the `$monitor` procedure is invoked at the beginning of the simulation with the following format string: `"input_bits = %b, result = %b\n"`. This format string specifies two variables to monitor, `input_bits` and `result`.
+
+Now, let's analyze each operation:
+
+1. `result = &input_bits;`: The `$monitor` will trigger because the value of `result` changes. The output will be displayed.
+
+2. `result = ~&input_bits;`: The `$monitor` will trigger because the value of `result` changes. The output will be displayed.
+
+3. `result = |input_bits;`: The `$monitor` will not trigger because the value of `result` does not change (it remains the same as `input_bits`). No output will be displayed for this operation.
+
+4. `result = ~|input_bits;`: The `$monitor` will not trigger for the same reason as above.
+
+5. `result = ^input_bits;`: The `$monitor` will trigger because the value of `result` changes. The output will be displayed.
+
+6. `result = ~^input_bits;`: The `$monitor` will trigger because the value of `result` changes. The output will be displayed.
+
+Therefore, the `$monitor` procedure will not monitor and display the output every time. It will only trigger and display output when there is a change in the monitored variables, as specified by the format string.
+</p>
+<hr>
+<h1 style="font-size: larger;"><b>Write Verilog code to demonstrate the usage of logical operators: !, &&, ||</b></h1>
+<p style="font-size: large;white-space: pre-wrap;">
+    module logical_operator();
+    reg[3:0] val1 = 4'b1111;
+    reg[3:0] val2 = 4'b0000;
+    initial begin
+    #1
+    if (!val1) begin
+    $display("value of val1 = %b\n", val1);
+    end else begin
+    $display("i expected val1 to be 0\n");
+    end
+    #1
+    if (!val2) begin
+    $display("value of val2 = %b\n",val2);
+    end else begin
+    $display("i expected val2 to be 0\n");
+    end
+    #1
+    if (val1 && (!val2)) begin
+    $display("value of val1 = %b and val2 = %b\n",val1, val2);
+    end else begin
+    $display(" i expected val1 = 1 and val2 = 0\n");
+    end
+    #1
+    while (val2 < 5) begin
+    $display("Val2 = %d\n",val2);
+    val2 = val2 + 1;
+    end
+    end
+    endmodule
+    module logical_operator();
+    reg[3:0] val1 = 4'b1111;
+    reg[3:0] val2 = 4'b0000;
+    initial begin
+    #1
+    if (!val1) begin
+    $display("value of val1 = %b\n", val1);
+    end else begin
+    $display("i expected val1 to be 0\n");
+    end
+    #1
+    if (!val2) begin
+    $display("value of val2 = %b\n",val2);
+    end else begin
+    $display("i expected val2 to be 0\n");
+    end
+    #1
+    if (val1 && (!val2)) begin
+    $display("value of val1 = %b and val2 = %b\n",val1, val2);
+    end else begin
+    $display(" i expected val1 = 1 and val2 = 0\n");
+    end
+    #1
+    while (val2 < 5) begin
+    $display("Val2 = %d\n",val2);
+    val2 = val2 + 1;
+    end
+    end
+    endmodule
+</p>
+<hr>
+<h1 style="font-size: larger;"><b>Write Verilog code to demonstrate shift operators: <<, >>, >>> (sign
+                extension)
+                </b></h1>
+                <p style="font-size: large;white-space:pre-wrap;">
+                    module shift_operator();
+                    reg [7:0] a = 8'b0000_1000;
+                    reg [7:0] b;
+                    initial begin
+                    $monitor("a = %b, b = %b, a = %d, b = %d\n",a,b,a,b);
+                    end
+                    initial begin
+                    b = a << 1;
+                    #1;b = a >> 2;
+                    #1;b = a << 4;
+                    #1;b = b >> 4;
+                    #1
+                    a = 8'b1111_1000;
+                    b = a >>> 1; //introduced in 2001. might not work in old env.
+                    end
+                    endmodule
+            </p>
+                <hr>
+                <h1 style="font-size: larger;"><b>write Verilog code to add two 8 bit numbers and store it another
+                    variable. Write testbench to verify results.</b></h1>
+                    <p style="font-size: large;white-space: pre-wrap;">
+                        module adder8bit(
+                            input [7:0] a,
+                            input [7:0] b,
+                            output [8:0] sum
+                            );
+                            assign sum = a + b;
+                            endmodule
+                            module adder_testbench();
+                            reg [7:0] a = 0; //observe reg for input and
+                            reg [7:0] b = 0;
+                            wire [8:0] sum; //wire for output in original module
+                            adder8bit ADDER( //initializing adder8bit module
+                            .a(a),
+                            .b(b),
+                            .sum(sum)
+                            );
+                            initial begin
+                            $monitor("a = %d, b = %d, sum = %d",a, b, sum);
+                            end
+                            initial begin
+                            #1
+                            a = 1;
+                            #1
+                            b = 10;
+                            #1
+                            a = 3; b = 99;
+                            #1
+                            a = 100; b = 66;
+                            #1
+                            a = 255; b = 255;
+                            end
+                            endmodule
+                     </p>
+                     <hr>
+                     <h1 style="font-size: larger;"><b>Write Verilog code for half adder and test bench to verify the same.
+                        Use structural design.</b></h1>
+                        <p style="font-size: large;white-space: pre-wrap;">
+module half_adder_structural(
+input a,
+input b,
+output sum,
+output carry
+);
+xor XOR1(sum, a, b);
+and AND1(carry,a,b);
+endmodule
+module hadder_testbench();
+reg a;
+reg b;
+wire sum;
+wire carry;
+half_adder_structural HALF_ADDER(
+.a(a),
+.b(b),
+.sum(sum),
+.carry(carry)
+);
+initial begin
+$monitor("a = %b, b = %b, su = %b, carry = %b\n",a,b,sum, carry);
+end
+initial begin
+#1; a = 0; b = 0;
+#1; a = 0; b = 1;
+#1; a = 1; b = 0;
+#1; a = 1; b = 1;
+#1; a = 0; b = 0;
+end
+endmodule
+  </p>
+                        <hr>
+                        <h1 style="font-size: larger;"><b>Write Verilog structural code to implement full adder:</b></h1>
+                        <p style="font-size: large;white-space: pre-wrap;">
+module full_adder_structural(
+ input a,
+ input b,
+input carry_in,
+ output sum,
+ output carry_out
+ );
+
+ // Declare nets to connect the half adders
+ wire sum1;
+ wire carry1;
+ wire carry2;
+ // Instantiate two half_adder_structural modules
+ half_adder_structural HA1(
+ .a(a),
+ .b(b),
+ .sum(sum1),
+ .carry(carry1)
+ );
+half_adder_structural HA2(
+ .a(sum1),
+ .b(carry_in),
+ .sum(sum),
+ .carry(carry2)
+ );
+// Use Verilog primitive
+or (carry_out, carry1, carry2);
+
+endmodule
+module half_adder_structural(
+ input a,
+ input b,
+ output sum,
+ output carry
+ );
+
+ // Instantiate Verilog built-in primitives and connect them with nets
+ xor XOR1 (sum, a, b); // instantiate a XOR gate
+ and AND1 (carry, a, b);
+
+endmodule
+module testbench();
+
+ // Declare variables and nets for module ports
+ reg a;
+ reg b;
+ reg cin;
+ wire sum;
+ wire cout;
+
+ // Instantiate the module
+ full_adder_structural FULL_ADD(
+ .a(a),
+ .b(b),
+ .carry_in(cin),
+ .sum(sum),
+ .carry_out(cout)
+ );
+
+ // Generate stimulus and monitor module ports
+ initial begin
+ $monitor("a=%b, b=%b, carry_in=%0b, sum=%b, carry_out=%b", a, b, cin,
+sum, cout);
+ end
+
+ initial begin // the same data as in the truth table
+ #1; a = 0; b = 0; cin = 0;
+ #1; a = 0; b = 0; cin = 1;
+ #1; a = 0; b = 1; cin = 0;
+ #1; a = 0; b = 1; cin = 1;
+ #1; a = 1; b = 0; cin = 0;
+ #1; a = 1; b = 0; cin = 1;
+ #1; a = 1; b = 1; cin = 0;
+ #1; a = 1; b = 1; cin = 1;
+ end
+
+endmodule
+ </p>
+                        <hr>
+    <h1 style="font-size: larger;"><b>Write Verilog code for Half-Adder using behavioural model.</b></h1>
+    <p style="font-size: large;white-space: pre-wrap;">
+        module half_adder_behavioral(
+            input a,
+            input b,
+            output reg sum, //observe reg. sum and carry
+            output reg carry); //have to be Net type
+            always @(a or b) begin
+            sum = a ^ b;
+            carry = a & b;
+            end
+            endmodule
+            module hab_testbench();
+            reg a, b;
+            wire sum, carry;
+            half_adder_behavioral HAB(.a(a), .b(b), .sum(sum), .carry(carry));
+            initial begin
+            $monitor("a = %b, b = %b, sum = %b, carry = %b", a,b,sum, carry);
+            end
+            initial begin
+            #1; a=0;b=0;
+            #1; a=0;b=1;
+            #1; a=1;b=0;
+            #1; a=1;b=1;
+            #1; a=0;b=0;
+            end
+            endmodule
+</p>
+<hr>
+<h1 style="font-size: larger;"><b>Write Verilog code for Full-Adder using behavioural model</b></h1>
+<p style="font-size: large;white-space: pre-wrap;">
+    module FA_Behavioral(
+        input a,
+        input b,
+        input cin,
+        output reg sum,
+        output reg cout
+        );
+        always @(a or b or cin) begin
+        sum = a ^ b ^ cin;
+        cout = (a & b) | ((a ^ b) & cin);
+        end
+        endmodule
+        module FAB_Testbench();
+        reg a;
+        reg b;
+        reg cin;
+        wire sum;
+        wire cout;
+        FA_Behavioral FAB(
+        .a(a),
+        .b(b),
+        .cin(cin),
+        .sum(sum),
+        .cout(cout)
+        );
+        initial begin
+        $monitor("a=%b, b=%b, cin=%b, sum=%b,
+        cout=%b",a,b,cin,sum,cout);
+        end
+        initial begin
+        #1; a = 0; b = 0; cin = 0;
+        #1; a = 0; b = 0; cin = 1;
+        #1; a = 0; b = 1; cin = 0;
+        #1; a = 0; b = 1; cin = 1;
+        #1; a = 1; b = 0; cin = 0;
+        #1; a = 1; b = 0; cin = 1;
+        #1; a = 1; b = 1; cin = 0;
+        #1; a = 1; b = 1; cin = 1;
+        #1; a = 0; b = 0; cin = 0;
+        end
+        endmodule
+</p>
+<hr>
+<h1 style="font-size: larger;"><b>Write Verilog code in structural style to implement 4 bit binary adder</b></h1>
+<p style="font-size: large;white-space: pre-wrap;">
+    module bits4_adder_str(
+        input [3:0] a,
+        input [3:0] b,
+        input cin,
+        output [3:0] sum,
+        output cout);
+        wire [2:0] c;
+        full_adder_structural FAS0(
+        .a(a[0]),
+        .b(b[0]),
+        .cin(cin),
+        .sum(sum[0]),
+        .cout(c[0])
+        );
+        full_adder_structural FAS1(
+        .a(a[1]),
+        .b(b[1]),
+        .cin(c[0]),
+        .sum(sum[1]),
+        .cout(c[1])
+        );
+        full_adder_structural FAS2(
+        .a(a[2]),
+        .b(b[2]),
+        .cin(c[1]),
+        .sum(sum[2]),
+        .cout(c[2])
+        );
+        full_adder_structural FAS3(
+        .a(a[3]),
+        .b(b[3]),
+        .cin(c[2]),
+        .sum(sum[3]),
+        .cout(cout)
+        );
+        Endmodule
+        module BA4_testbench();
+        reg [3:0] a;
+        reg [3:0] b;
+        reg cin;
+        wire [3:0] sum;
+        wire cout;
+        bits4_adder_str ADDER(
+        .a(a),
+        .b(b),
+        .cin(cin),
+        .sum(sum),
+        .cout(cout)
+        );
+        initial begin
+        $monitor("a=%b, c=%b,cin=%b, sum=%b,
+        cout=%b",a,b,cin,sum,cout);
+        end
+        initial begin
+        #1; a=4'b0000;b=4'b0000;cin=0;
+        #1; a=4'b0000;b=4'b0000;cin=1;
+        #1; a=4'b1111;b=4'b0000;cin=0;
+        #1; a=4'b1111;b=4'b0000;cin=1;
+        #1; a=4'b1111;b=4'b1111;cin=0;
+        #1; a=4'b1111;b=4'b1111;cin=1;
+        end
+        endmodule
+</p>
+<hr>
+<h1 style="font-size: larger;"><b>Write Verilog code to demonstrate sum and product operation on
+    integer and real data types.</b></h1>
+<p style="font-size: large;white-space: pre-wrap;">
+    module sum_product();
+    integer a, b;
+    integer sum_int;
+    real x, y;
+    real prod_real;
+    initial begin
+    a = 10;
+    b = 20;
+    sum_int = a+b;
+    $display("\n a= %0d, b = %0d, sum = %0d", a, b, sum_int);
+    x = 15.5;
+    y = 12.2;
+    prod_real = x * y;
+    $display("\n x = %.2f y = %.2f, prod_ral = %.2f", x, y, prod_real);
+    end
+    endmodule
+    Verilog Data Types: Variables
+    reg (1 bit)
+    integer (32 bits)
+    real (64 bits)
+    time (32 bits)
+    realtime (64 bits)
+    Other categories of Data Types:
+    Nets – wire/tri, supply0, supply1, tri0, tri1, triand/wand, trireg
+    Parameters (Run-time constants – similar to #defines in C) – parameter, localparam, specparam
+</p>
+<hr>
+<h1 style="font-size: larger;"><b>Write Verilog code to execute a procedure whenever the value of a
+    variable changes.</b></h1>
+    <p style="font-size: large;white-space: pre-wrap;">
+        Example 1:
+        module procedures1( );
+        reg x = 1'b0; // 1bit variable with the value 0
+        reg y = 1'b1; // 1bit variable with the value 1
+        reg z; // used to store the result of operations between x and y
+         // A procedure example
+         always @(z) begin
+         $display("x=%b, y=%b, z=%b", x,y,z);
+        end
+        // Another procedure example
+        initial begin
+         #2; // wait 2 time units
+         z = x ^ y; // bit-wise XOR between the 1 bit variables x and y
+        #10; // wait 10 time units
+         y = 0; // change the value of y
+         z = x | y; // bit-wise OR between the 1 bit variables x and y
+         #10; // wait 10 time units
+         z = z | 0; // bit-wise AND between the 1-bit variable z and 1
+         #10; // wait 10 time units
+        end
+        endmodule
+        Example 2:
+        module procedures2();
+        integer a, b;
+        integer sum;
+        always @(sum) begin
+        $display("Sum = %0d\n", sum);
+        end
+        always @(a or b) begin
+        sum = a+b;
+        end
+        initial begin
+        a = 10;
+        b = 20;
+        #10
+        a = 11;
+        b = 22;
+        #10
+        a = 100;
+        end
+        endmodule
+        Literal values
+        - Used to represent data in specific format <size>’<base><value>
+        o Size – total number of bits in variable
+        o Base – Binary(b), Decimal(d), Hexadecimal(h)
+        o Value – digits from the selected base
+         Unsigned by default. (for sign, add s before base)
+         Use _ to separate bit fields(8’b1111_01010)
+         Z and x chars can be used in binary, hex and octal (8’h0Z)
+    </p>
+    <hr>
+    <h1 style="font-size: larger;"><b>Write Verilog code to demonstrate vectors.</b></h1>
+    <p style="font-size: large;white-space: pre-wrap;">
+        module vectors1();
+        reg [7:0] a = 0; // 8bit register (MSB_position=7, LSB_position=0)
+        reg [6:0] b = 0; // 7bit register
+        reg [7:0] d = 0; // 8bit register
+        wire [1:0] c; // 2bit net
+        // Continuous assignment between a net and a register
+        // c[1] = a[3];
+        // c[0] = a[2];
+        assign c[1:0] = a[3:2]; // This is also called 'bit slicing'
+       // Procedure used to continuously monitor 'a', 'b', 'c' and 'd'
+       initial begin
+        $monitor("PROC2 a=%b, b=%b, c=%b, d=%b", a, b, c, d);
+       end
+       // Another procedure example
+       initial begin
+        // Change only the value of 'a' to see the effect on 'c'
+        #1 a = 1;
+        #1 a = 8'b1111_0101;
+       #1 a = 8'b1111_1000;
+        #1 a = 8'b0000_1000;
+        #1 a = 8'b0;
+       
+       #1 b = 7'b111_1111; // Change the value of b
+       #1 d[3:0] = a[3:0]; // Change the value of d
+       #1 d[7:4] = b[6:3];
+       
+        #1 a = 8'b0000_1110; // Change the value of a
+        #1 d = {a[3:0], b[3:0]}; // concatenation
+        #1 d = {b[3:0], a[7:4]}; // concatenation
+       end
+       endmodule
+    </p>
+    <hr>
+    <h1 style="font-size: larger;"><b>Write Verilog code to demonstrate arithmetic operators in action</b></h1>
+    <p style="font-size: large;white-space: pre-wrap;">
+        module arithmetic_operators();
+        integer a = 10;
+        integer b = 5;
+        integer result;
+        real result1;
+        initial begin
+        $monitor("a=%d, b=%d, result=%d\n",a,b,result);
+        end
+        initial begin
+        result = a ** b;
+        #1
+        result = b ** a;
+        #1
+        a=12;b=20;
+        result = a * b;
+        #1
+        a=1000;b=50;
+        result = a/b;
+        #1
+        result = b/a;
+        #1
+        result = a%b;
+        #1
+        result = a+b;
+        #1
+        result = a-b;
+        end
+        endmodule
+    </p>
+    <hr>
+    <h1 style="font-size: larger;"><b>write Verilog code to demonstrate signals at different time. Use time
+        scale of 1µS/1nS.
+        </b></h1>
+        <p style="font-size: large;white-space: pre-wrap;">
+            `timescale 1us/1ns
+            module waveformm();
+            reg [1:0] sig1;
+            reg sig2;
+            initial begin
+            sig1 = 0;
+            #1
+            sig1[0] = 1'b1;
+            #2
+            sig2 = 1'bz;
+            #3
+            sig1[1] = 1'b1;
+            #2
+            sig1 = 2'b10;
+            sig2 = 1'b1;
+            #7
+            sig1[0] = 1'b1;
+            #6
+            sig2 = ~sig2;
+            #4; //total time = 25µS or 25000nS
+            end
+            endmodule
+        </p>
+        <hr>
+    </body>
+    </html>
